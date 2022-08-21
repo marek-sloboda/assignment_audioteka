@@ -34,7 +34,8 @@ class ProductListBuilder
             $data['products'][] = [
                 'id' => $product->getId(),
                 'name' => $product->getName(),
-                'price' => $product->getPrice()
+                'price' => $product->getPrice(),
+           //     'createdAt' => $product->getCreatedAtString(), TODO: if uncomment, must fix tests for ex.\App\Tests\Unit\ResponseBuilder\CartBuilderTest::test_builds_cart_with_products
             ];
         }
 

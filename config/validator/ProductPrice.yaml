@@ -1,0 +1,12 @@
+App\Entity\ProductDomain\ProductPrice:
+  properties:
+    price:
+      - NotBlank:
+          message: 'Product price should not be blank'
+      - Length:
+          min: 1
+      - Type:
+          type: integer
+          message: 'Product price should be type of integer'
+      - Positive:
+          message: 'Product price should be greater than zero'

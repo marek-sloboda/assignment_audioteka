@@ -2,6 +2,7 @@
 
 namespace App\ResponseBuilder;
 
+use App\Entity\CartProducts;
 use App\Service\Cart\Cart;
 
 class CartBuilder
@@ -13,11 +14,12 @@ class CartBuilder
             'products' => []
         ];
 
-        foreach ($cart->getProducts() as $product) {
+        /** @var CartProducts $cartProduct */
+        foreach ($cart->getProducts() as $cartProduct) {
             $data['products'][] = [
-                'id' => $product->getId(),
-                'name' => $product->getName(),
-                'price' => $product->getPrice()
+                'id' => $cartProduct->getProduct()->getId(),
+                'name' => $cartProduct->getProduct()->getName(),
+                'price' => $cartProduct->getProduct()->getPrice()
             ];
         }
 

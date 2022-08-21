@@ -3,6 +3,7 @@
 namespace App\Tests\Functional\Controller\Cart\AddProductController;
 
 use App\Entity\Cart;
+use App\Entity\CartProducts;
 use App\Entity\Product;
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Persistence\ObjectManager;
@@ -27,10 +28,17 @@ class AddProductControllerFixture extends AbstractFixture
         $manager->persist($cart);
 
         $fullCart = new Cart('1e82de36-23f3-4ae7-ad5d-616295f1d6c0');
-        $fullCart->addProduct($products[0]);
-        $fullCart->addProduct($products[1]);
-        $fullCart->addProduct($products[2]);
         $manager->persist($fullCart);
+
+        $fullCartProducts = [
+            new CartProducts($fullCart, $products[0]),
+            new CartProducts($fullCart, $products[1]),
+            new CartProducts($fullCart, $products[2]),
+        ];
+
+        foreach ($fullCartProducts as $cartProduct) {
+            $manager->persist($cartProduct);
+        }
 
         $manager->flush();
     }

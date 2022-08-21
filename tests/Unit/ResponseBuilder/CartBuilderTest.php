@@ -3,6 +3,7 @@
 namespace App\Tests\Unit\ResponseBuilder;
 
 use App\Entity\Cart;
+use App\Entity\CartProducts;
 use App\Entity\Product;
 use App\ResponseBuilder\CartBuilder;
 use PHPUnit\Framework\TestCase;
@@ -34,8 +35,10 @@ class CartBuilderTest extends TestCase
     public function test_builds_cart_with_products(): void
     {
         $cart = new Cart('3db5f857-e5a3-4c8d-a262-37da156c0001');
-        $cart->addProduct(new Product('16e0226c-0ed8-434a-9342-429aefeb98f0', 'Product 1', 1990));
-        $cart->addProduct(new Product('5884ad4c-9ac2-40a5-ba11-1a96156c5889', 'Product 2', 3690));
+        $cartProduct1 = new CartProducts($cart, new Product('16e0226c-0ed8-434a-9342-429aefeb98f0', 'Product 1', 1990));
+        $cartProduct2 = new CartProducts($cart, new Product('5884ad4c-9ac2-40a5-ba11-1a96156c5889', 'Product 2', 3690));
+        $cart->addCartProduct($cartProduct1);
+        $cart->addCartProduct($cartProduct2);
 
         $this->assertEquals([
             'total_price' => 5680,

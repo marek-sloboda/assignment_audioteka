@@ -24,6 +24,7 @@ class AddProductController extends AbstractController implements MessageBusAware
 
     public function __invoke(Cart $cart, Product $product): Response
     {
+
         if ($cart->isFull()) {
             return new JsonResponse(
                 $this->errorBuilder->__invoke('Cart is full.'),

@@ -35,7 +35,7 @@ class AddControllerTest extends WebTestCase
         self::assertResponseStatusCodeSame(422);
 
         $response = $this->getJsonResponse();
-        self::assertequals('Invalid name or price.', $response['error_message']);
+        self::stringContains('Product name should not be blank', $response['error_message']);
     }
 
     public function test_product_without_a_price_cannot_be_added(): void
@@ -47,7 +47,7 @@ class AddControllerTest extends WebTestCase
         self::assertResponseStatusCodeSame(422);
 
         $response = $this->getJsonResponse();
-        self::assertequals('Invalid name or price.', $response['error_message']);
+        self::stringContains('Product price should not be blank', $response['error_message']);
     }
 
     public function test_product_with_non_positive_price_cannot_be_added(): void
@@ -60,6 +60,6 @@ class AddControllerTest extends WebTestCase
         self::assertResponseStatusCodeSame(422);
 
         $response = $this->getJsonResponse();
-        self::assertequals('Invalid name or price.', $response['error_message']);
+        self::stringContains('Product price should be greater than zero', $response['error_message']);
     }
 }

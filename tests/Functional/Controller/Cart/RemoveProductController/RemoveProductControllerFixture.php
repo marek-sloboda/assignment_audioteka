@@ -3,6 +3,7 @@
 namespace App\Tests\Functional\Controller\Cart\RemoveProductController;
 
 use App\Entity\Cart;
+use App\Entity\CartProducts;
 use App\Entity\Product;
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Persistence\ObjectManager;
@@ -19,8 +20,10 @@ class RemoveProductControllerFixture extends AbstractFixture
         $manager->persist($product2);
 
         $cart = new Cart('97e385fe-9876-45fc-baa0-4f2f0df90950');
-        $cart->addProduct($product);
         $manager->persist($cart);
+
+        $cartProduct = new CartProducts($cart,$product);
+        $manager->persist($cartProduct);
 
         $manager->flush();
     }

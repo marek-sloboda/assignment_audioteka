@@ -1,0 +1,8 @@
+App\Entity\ProductDomain\ProductName:
+  properties:
+    name:
+    - NotBlank:
+        message: 'Product name should not be blank'
+    - Length:
+        max: 255
+        maxMessage: 'Product name should be max 255 length'

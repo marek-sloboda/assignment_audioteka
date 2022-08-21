@@ -7,7 +7,7 @@ use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 
 class AddProductToCartHandler implements MessageHandlerInterface
 {
-    public function __construct(private CartService $service) { }
+    public function __construct(private readonly CartService $service) { }
 
     public function __invoke(AddProductToCart $command): void
     {

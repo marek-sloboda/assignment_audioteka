@@ -19,9 +19,9 @@ class Cart implements \App\Service\Cart\Cart
     #[ORM\Column(type: 'uuid', nullable: false)]
     private UuidInterface $id;
 
-    #[ORM\ManyToMany(targetEntity: 'Product')]
+    #[ORM\OneToMany(mappedBy: 'cart', targetEntity: 'App\Entity\CartProducts')]
     #[ORM\JoinTable(name: 'cart_products')]
-    private Collection $products;
+    private ?Collection $products = null;
 
     public function __construct(string $id)
     {
@@ -36,17 +36,20 @@ class Cart implements \App\Service\Cart\Cart
 
     public function getTotalPrice(): int
     {
-        return array_reduce(
-            $this->products->toArray(),
-            static fn(int $total, Product $product): int => $total + $product->getPrice(),
-            0
-        );
+        $totalPrice = 0;
+
+        /** @var CartProducts $cartProduct */
+        foreach ($this->products as $cartProduct){
+            $totalPrice += ($cartProduct->getProduct()->getPrice() * $cartProduct->getProductQuantity());
+       }
+
+        return $totalPrice;
     }
 
     #[Pure]
     public function isFull(): bool
     {
-        return $this->products->count() >= self::CAPACITY;
+        return $this->getTotalQuantity() >= self::CAPACITY;
     }
 
     public function getProducts(): iterable
@@ -60,13 +63,26 @@ class Cart implements \App\Service\Cart\Cart
         return $this->products->contains($product);
     }
 
-    public function addProduct(\App\Entity\Product $product): void
+
+    public function addCartProduct(\App\Entity\CartProducts $cartProduct): void
     {
-        $this->products->add($product);
+        $this->products->add($cartProduct);
     }
 
     public function removeProduct(\App\Entity\Product $product): void
     {
         $this->products->removeElement($product);
+    }
+
+    private function getTotalQuantity(): int
+    {
+        $totalQuantity = 0;
+
+        /** @var CartProducts $cartProduct */
+        foreach ($this->products as $cartProduct){
+            $totalQuantity += $cartProduct->getProductQuantity();
+        }
+
+        return $totalQuantity;
     }
 }

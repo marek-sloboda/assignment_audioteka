@@ -1,7 +1,7 @@
 framework:
     messenger:
         # Uncomment this (and the failed transport below) to send failed messages to this transport for later handling.
-        # failure_transport: failed
+        failure_transport: failed
 
         transports:
             # https://symfony.com/doc/current/messenger.html#transport-configuration
@@ -14,3 +14,6 @@ framework:
             'App\Messenger\RemoveProductFromCart': async
             'App\Messenger\AddProductToCatalog': async
             'App\Messenger\RemoveProductFromCatalog': async
+            'App\Messenger\EditProductNameIntoCatalog': async
+#            'App\Messenger\EditProductPriceIntoCatalog': async
+

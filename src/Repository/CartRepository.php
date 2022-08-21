@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\CartProducts;
 use App\Entity\Product;
 use App\Service\Cart\Cart;
 use App\Service\Cart\CartService;
@@ -10,16 +11,24 @@ use Ramsey\Uuid\Uuid;
 
 class CartRepository implements CartService
 {
-    public function __construct(private EntityManagerInterface $entityManager) {}
+    public function __construct(private readonly EntityManagerInterface $entityManager)
+    {
+    }
 
     public function addProduct(string $cartId, string $productId): void
     {
         $cart = $this->entityManager->find(\App\Entity\Cart::class, $cartId);
         $product = $this->entityManager->find(Product::class, $productId);
+        $cartProduct = $this->entityManager->getRepository(CartProducts::class)->findOneBy(['cart' => $cart, 'product' => $product]);
 
-        if ($cart && $product && !$cart->hasProduct($product)) {
-            $cart->addProduct($product);
-            $this->entityManager->persist($cart);
+        if ($cartProduct) {
+            $cartProduct->increaseProductQuantity();
+            $this->entityManager->flush();
+        }
+
+        if(!$cartProduct){
+            $cartProduct = new CartProducts($cart, $product);
+            $this->entityManager->persist($cartProduct);
             $this->entityManager->flush();
         }
     }
@@ -28,10 +37,16 @@ class CartRepository implements CartService
     {
         $cart = $this->entityManager->find(\App\Entity\Cart::class, $cartId);
         $product = $this->entityManager->find(Product::class, $productId);
+        $cartProduct = $this->entityManager->getRepository(CartProducts::class)->findOneBy(['cart' => $cart, 'product' => $product]);
 
-        if ($cart && $product && $cart->hasProduct($product)) {
-            $cart->removeProduct($product);
-            $this->entityManager->persist($cart);
+        if ($cartProduct && $cartProduct->getProductQuantity() === 1) {
+           // $cartProduct->removeProduct($product);
+            $this->entityManager->remove($cartProduct);
+            $this->entityManager->flush();
+        }
+
+        if ($cartProduct && $cartProduct->getProductQuantity() >= 1) {
+            $cartProduct->decreaseProductQuantity();
             $this->entityManager->flush();
         }
     }
